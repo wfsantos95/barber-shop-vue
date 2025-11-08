@@ -2,7 +2,8 @@
   <div class="min-h-screen bg-neutral-500 font-serif">
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-neutral-900/95 backdrop-blur-sm border-b border-neutral-800">
-      <nav class="w-full max-w-7xl mx-auto px-4 py-4">
+      <div class="w-full max-w-7xl mx-auto px-4">
+        <nav class="py-4">
         <div class="flex items-center justify-between">
           <!-- Logo -->
           <a href="#" class="text-2xl font-bold text-amber-500 flex-shrink-0">
@@ -69,7 +70,8 @@
             </li>
           </ul>
         </div>
-      </nav>
+        </nav>
+      </div>
     </header>
 
     <!-- Hero Section -->
@@ -827,6 +829,18 @@ html {
   box-sizing: border-box;
 }
 
+/* Prevenir overflow horizontal */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Garantir consistência de largura em todas as seções */
+.w-full.max-w-7xl {
+  width: 100%;
+  max-width: 80rem;
+}
+
 /* Melhorar responsividade em dispositivos muito pequenos */
 @media (max-width: 320px) {
   .text-5xl {
@@ -857,5 +871,21 @@ html {
     align-items: center;
     justify-content: center;
   }
+  
+  /* Garantir padding consistente em mobile */
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Garantir que o header tenha a mesma largura que o conteúdo */
+header {
+  width: 100%;
+}
+
+header .w-full.max-w-7xl {
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
