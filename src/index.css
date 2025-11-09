@@ -1,1 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
 @import "tailwindcss";
+
+body {
+    font-family: 'Playfair Display', serif;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Garantir que elementos não ultrapassem a largura da tela */
+* {
+    box-sizing: border-box;
+}
+
+/* Prevenir overflow horizontal */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Garantir consistência de largura em todas as seções */
+.w-full.max-w-7xl {
+    width: 100%;
+    max-width: 80rem;
+}
+
+/* Melhorar responsividade em dispositivos muito pequenos */
+@media (max-width: 320px) {
+    .text-5xl {
+        font-size: 2.5rem;
+    }
+
+    .text-4xl {
+        font-size: 2rem;
+    }
+
+    /* Ajustar logo em telas muito pequenas */
+    .text-2xl {
+        font-size: 1.5rem;
+    }
+}
+
+/* Garantir que o header não quebre em telas pequenas */
+@media (max-width: 480px) {
+    nav {
+        min-height: 60px;
+    }
+
+    /* Garantir que o botão mobile sempre seja visível */
+    button[aria-label*="menu"] {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Garantir padding consistente em mobile */
+    .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Garantir que o header tenha a mesma largura que o conteúdo */
+header {
+    width: 100%;
+}
+
+header .w-full.max-w-7xl {
+    margin-left: auto;
+    margin-right: auto;
+}

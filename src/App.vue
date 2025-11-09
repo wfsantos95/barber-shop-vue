@@ -6,16 +6,23 @@
         <nav class="py-4">
         <div class="flex items-center justify-between">
           <!-- Logo -->
-          <a href="#" class="text-2xl font-bold text-amber-500 flex-shrink-0">
-            {{ content.header.logo.text }}
-          </a>
+          <div class="flex items-center space-x-2">
+            <img src="/assets/logo.png"
+                 alt="Logo"
+                 class="w-16 h-16">
+
+            <a href="#" class="text-2xl font-bold text-amber-500 flex-shrink-0">
+              {{ content.header.logo.text }}
+            </a>
+          </div>
 
           <!-- Desktop Navigation -->
           <ul class="hidden md:flex items-center space-x-4 md:space-x-8">
             <li v-for="(item, index) in content.header.navigation" :key="index">
               <a
-                  :href="item.href"
-                  class="text-neutral-300 hover:text-amber-500 transition-colors duration-300"
+                  @click.prevent="scrollToSection(item.href)"
+                  href="#"
+                  class="text-neutral-300 hover:text-amber-500 transition-colors duration-300 cursor-pointer"
               >
                 {{ item.text }}
               </a>
@@ -26,8 +33,9 @@
           <div class="flex items-center space-x-2">
             <!-- CTA Button -->
             <a
-                :href="content.header.cta.href"
-                class="hidden md:inline-block px-6 py-2 bg-amber-500 text-neutral-900 hover:bg-neutral-200 transition-colors duration-300 font-semibold"
+                @click.prevent="scrollToSection(content.header.cta.href)"
+                href="#"
+                class="hidden md:inline-block px-6 py-2 bg-amber-500 text-neutral-900 hover:bg-neutral-200 transition-colors duration-300 font-semibold cursor-pointer"
             >
               {{ content.header.cta.text }}
             </a>
@@ -53,17 +61,18 @@
           <ul class="space-y-4">
             <li v-for="(item, index) in content.header.navigation" :key="index">
               <a
-                  :href="item.href"
-                  class="block text-neutral-300 hover:text-amber-500 transition-colors duration-300"
-                  @click="mobileMenuOpen = false"
+                  @click.prevent="scrollToSection(item.href); mobileMenuOpen = false"
+                  href="#"
+                  class="block text-neutral-300 hover:text-amber-500 transition-colors duration-300 cursor-pointer"
               >
                 {{ item.text }}
               </a>
             </li>
             <li>
               <a
-                  :href="content.header.cta.href"
-                  class="block px-6 py-2 bg-amber-500 text-neutral-900 text-center hover:bg-neutral-200 transition-colors duration-300 font-semibold"
+                  @click.prevent="scrollToSection(content.header.cta.href); mobileMenuOpen = false"
+                  href="#"
+                  class="block px-6 py-2 bg-amber-500 text-neutral-900 text-center hover:bg-neutral-200 transition-colors duration-300 font-semibold cursor-pointer"
               >
                 {{ content.header.cta.text }}
               </a>
@@ -94,8 +103,9 @@
             {{ content.hero.description }}
           </p>
           <a
-              :href="content.hero.cta.href"
-              class="inline-block px-8 py-4 bg-amber-500 text-neutral-900 text-lg font-semibold hover:bg-neutral-200 transition-colors duration-300"
+              @click.prevent="scrollToSection(content.hero.cta.href)"
+              href="#"
+              class="inline-block px-8 py-4 bg-amber-500 text-neutral-900 text-lg font-semibold hover:bg-neutral-200 transition-colors duration-300 cursor-pointer"
           >
             {{ content.hero.cta.text }}
           </a>
@@ -171,7 +181,8 @@
             <div class="p-6">
               <h3 class="text-2xl font-bold text-amber-500 mb-2">{{ service.name }}</h3>
               <p class="text-3xl font-bold text-neutral-300 mb-4">{{ service.price }}</p>
-              <button class="w-full py-3 bg-amber-500 text-neutral-900 font-semibold hover:bg-neutral-200 transition-colors duration-300">
+              <button
+                  class="w-full py-3 bg-amber-500 text-neutral-900 font-semibold hover:bg-neutral-200 transition-colors duration-300 cursor-pointer">
                 {{ service.cta }}
               </button>
             </div>
@@ -193,22 +204,52 @@
           </h2>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <article
+        <div class="relative">
+          <Swiper
+            :modules="swiperModules"
+            :slides-per-view="1"
+            :space-between="30"
+            :autoplay="{
+              delay: 3000,
+              disableOnInteraction: false,
+            }"
+            :pagination="{
+              clickable: true,
+            }"
+            :navigation="true"
+            :breakpoints="{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+            }"
+            class="team-swiper"
+          >
+            <SwiperSlide
               v-for="member in content.team.members"
               :key="member.id"
-              class="text-center group"
-          >
-            <div class="relative mb-4 overflow-hidden">
-              <img
-                  :src="member.image"
-                  :alt="member.name"
-                  class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-            </div>
-            <h3 class="text-xl font-bold text-neutral-900 mb-1">{{ member.name }}</h3>
-            <p class="text-neutral-600">{{ member.role }}</p>
-          </article>
+            >
+              <article class="text-center group">
+                <div class="relative mb-4 overflow-hidden rounded-lg">
+                  <img
+                    :src="member.image"
+                    :alt="member.name"
+                    class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <h3 class="text-xl font-bold text-neutral-900 mb-1">{{ member.name }}</h3>
+                <p class="text-neutral-600">{{ member.role }}</p>
+              </article>
+            </SwiperSlide>
+          </Swiper>
         </div>
       </div>
     </section>
@@ -276,14 +317,46 @@
           </article>
         </div>
 
-        <div class="flex justify-center">
+        <div  class="mb-2"
+            v-for="(schedule, index) in content.locations.schedule"
+              :key="index">
+          <div v-if="isCurrentDay(schedule.day)" class="mt-2">
+              <span :class="[
+                'inline-block px-2 py-1 text-xs font-bold rounded uppercase tracking-wider',
+                isOpenToday
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-rose-600 text-white'
+              ]">
+                {{ isOpenToday ? 'Aberto Hoje' : 'Fechado Hoje' }}
+              </span>
+          </div>
+        </div>
+
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 justify-items-center">
           <article
               v-for="(schedule, index) in content.locations.schedule"
               :key="index"
-              class="bg-neutral-800 p-6 text-center"
+              :class="[
+                'p-4 text-center w-full max-w-xs transition-all duration-300',
+                isCurrentDay(schedule.day) 
+                  ? 'bg-amber-500 text-neutral-900 shadow-lg transform scale-105' 
+                  : 'bg-neutral-800'
+              ]"
           >
-            <h4 class="text-lg font-bold text-amber-500 mb-2">{{ schedule.day }}</h4>
-            <p class="text-neutral-300 text-sm">{{ schedule.hours }}</p>
+            <h4 :class="[
+              'text-lg font-bold mb-2',
+              isCurrentDay(schedule.day) ? 'text-neutral-900' : 'text-amber-500'
+            ]">
+              {{ schedule.day }}
+            </h4>
+            <p :class="[
+              'text-sm mb-2',
+              isCurrentDay(schedule.day) ? 'text-neutral-800' : 'text-neutral-300'
+            ]">
+              {{ schedule.hours }}
+            </p>
+
           </article>
         </div>
       </div>
@@ -473,6 +546,7 @@
           <div>
             <h4 class="text-lg font-bold text-amber-500 mb-4">{{ content.footer.links.schedule.title }}</h4>
             <div class="text-neutral-400 space-y-2 mb-6">
+              <p>{{ content.footer.links.schedule.monday }}</p>
               <p>{{ content.footer.links.schedule.weekdays }}</p>
               <p>{{ content.footer.links.schedule.saturday }}</p>
               <p>{{ content.footer.links.schedule.sunday }}</p>
@@ -488,16 +562,77 @@
                   :aria-label="social.name"
               >
                 <span class="sr-only">{{ social.name }}</span>
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10"/>
+                <svg
+                    v-if="social.icon === 'facebook'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                  <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" />
                 </svg>
+
+                <svg
+                    v-if="social.icon === 'instagram'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                  <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
+                  <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                  <path d="M16.5 7.5l0 .01" />
+                </svg>
+
+                <svg
+                    v-if="social.icon === 'twitter'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+                </svg>
+
+                <svg
+                    v-if="social.icon === 'youtube'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                  <path d="M2 8a4 4 0 0 1 4 -4h12a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4v-8z" />
+                  <path d="M10 9l5 3l-5 3z" />
+                </svg>
+
               </a>
             </div>
           </div>
         </div>
 
         <div class="border-t border-neutral-900 pt-8">
-          <p class="text-center text-neutral-400">{{ content.footer.copyright }}</p>
+          <p class="text-center text-neutral-400">{{ content.footer.copyright }} - Desenvolido por <a href="https://www.idealcriativo.com" target="_blank" class="text-amber-500 hover:text-amber-600 transition-colors">Ideal Criativo</a></p>
         </div>
       </div>
     </footer>
@@ -505,13 +640,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Autoplay, Pagination, Navigation } from 'swiper/modules'
+
+// Import Swiper styles
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 
 // Importar o conteúdo do JSON
 const content = ref({
   "site": {
     "title": "Barbearia Premium",
-    "description": "A primeira escolha de um gentleman"
+    "description": "Tradição em Cada Corte, Elegância em Cada Detalhe"
   },
   "header": {
     "logo": {
@@ -527,19 +669,19 @@ const content = ref({
     ],
     "cta": {
       "text": "Agendar Horário",
-      "href": "#agendar"
+      "href": "#contato"
     }
   },
   "hero": {
-    "badge": "Barbearia Top Avaliada",
+    "badge": "Shave Parlour",
     "title": {
-      "before": "A Primeira Escolha",
-      "highlight": "de um Gentleman"
+      "before": "Tradição em Cada Corte",
+      "highlight": "Elegância em Cada Detalhe"
     },
     "description": "Oferecemos os melhores serviços de barbearia com profissionais altamente qualificados e produtos premium para você.",
     "cta": {
       "text": "Agendar Atendimento",
-      "href": "#agendar"
+      "href": "#contato"
     },
     "backgroundImage": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1920&h=1080&fit=crop"
   },
@@ -625,26 +767,33 @@ const content = ref({
         "id": 1,
         "name": "Carlos Silva",
         "role": "Barbeiro Especialista",
-        "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+        "image": "https://images.unsplash.com/photo-1703792685152-d13e206924d8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1974"
       },
       {
         "id": 2,
         "name": "Ana Paula",
-        "role": "Barbeira Especialista",
+        "role": "Hair Stylist",
         "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
       },
       {
         "id": 3,
         "name": "João Santos",
         "role": "Barbeiro Senior",
-        "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop"
+        "image": "https://images.unsplash.com/photo-1703792684940-a05aa0f1188f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
       },
       {
         "id": 4,
-        "name": "Maria Costa",
-        "role": "Barbeira Senior",
-        "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
+        "name": "Pedro Costa",
+        "role": "Barbeiro Senior",
+        "image": "https://images.unsplash.com/photo-1635273051937-a0ddef9573b6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
+      },
+      {
+        "id": 5,
+        "name": "Douglas Almeida",
+        "role": "Barbeiro Senior",
+        "image": "  https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?w=600&h=400&fit=crop"
       }
+
     ]
   },
   "testimonials": {
@@ -692,12 +841,13 @@ const content = ref({
       }
     ],
     "schedule": [
-      { "day": "Segunda", "hours": "10:00 - 20:00" },
+      { "day": "Segunda", "hours": "Fechado" },
       { "day": "Terça", "hours": "10:00 - 20:00" },
       { "day": "Quarta", "hours": "10:00 - 20:00" },
       { "day": "Quinta", "hours": "10:00 - 20:00" },
       { "day": "Sexta", "hours": "10:00 - 20:00" },
-      { "day": "Sábado", "hours": "09:00 - 18:00" }
+      { "day": "Sábado", "hours": "09:00 - 18:00" },
+      { "day": "Domingo", "hours": "09:00 - 18:00" }
     ]
   },
   "contact": {
@@ -772,9 +922,10 @@ const content = ref({
       },
       "schedule": {
         "title": "Horários",
-        "weekdays": "Seg - Sex: 10:00 - 20:00",
+        "monday" : "Seg: Fechado",
+        "weekdays": "Ter - Sex: 10:00 - 20:00",
         "saturday": "Sábado: 09:00 - 18:00",
-        "sunday": "Domingo: Fechado"
+        "sunday": "Domingo: 09:00 - 18:00",
       },
       "social": {
         "title": "Redes Sociais",
@@ -792,6 +943,49 @@ const content = ref({
 
 const mobileMenuOpen = ref(false)
 
+// Configuração do Swiper
+const swiperModules = [Autoplay, Pagination, Navigation]
+
+// Computed properties para horários
+const currentDay = computed(() => {
+  const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+  const today = new Date().getDay()
+
+  return days[today]
+})
+
+const currentTime = computed(() => {
+  const now = new Date()
+  return now.getHours() * 100 + now.getMinutes() // Formato HHMM para comparação
+})
+
+const isOpenToday = computed(() => {
+  const today = currentDay.value
+  const schedule = content.value.locations.schedule
+  
+  // Encontrar o horário de hoje
+  const todaySchedule = schedule.find(item => item.day === today)
+  
+  if (!todaySchedule || todaySchedule.hours === 'Fechado') {
+    return false
+  }
+  
+  // Parse do horário (formato: "10:00 - 20:00")
+  const [openTime, closeTime] = todaySchedule.hours.split(' - ')
+  const [openHour, openMin] = openTime.split(':').map(Number)
+  const [closeHour, closeMin] = closeTime.split(':').map(Number)
+  
+  const openTimeNum = openHour * 100 + openMin
+  const closeTimeNum = closeHour * 100 + closeMin
+  const currentTimeNum = currentTime.value
+  
+  return currentTimeNum >= openTimeNum && currentTimeNum <= closeTimeNum
+})
+
+const isCurrentDay = (day) => {
+  return day === currentDay.value
+}
+
 const handleSubmit = () => {
   alert('Formulário enviado! (Esta é uma demonstração)')
 }
@@ -799,93 +993,64 @@ const handleSubmit = () => {
 const handleNewsletterSubmit = () => {
   alert('Inscrito com sucesso! (Esta é uma demonstração)')
 }
+
+const scrollToSection = (sectionId) => {
+  const element = document.querySelector(sectionId)
+  if (element) {
+    element.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+}
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
-
-body {
-  font-family: 'Playfair Display', serif;
+/* Estilos customizados para o Swiper da equipe */
+.team-swiper {
+  padding-bottom: 50px !important;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+.team-swiper .swiper-pagination {
+  bottom: 0 !important;
 }
 
-html {
-  scroll-behavior: smooth;
+.team-swiper .swiper-pagination-bullet {
+  background: #a3a3a3 !important;
+  opacity: 0.5 !important;
+  width: 12px !important;
+  height: 12px !important;
 }
 
-/* Garantir que elementos não ultrapassem a largura da tela */
-* {
-  box-sizing: border-box;
+.team-swiper .swiper-pagination-bullet-active {
+  background: #f59e0b !important;
+  opacity: 1 !important;
 }
 
-/* Prevenir overflow horizontal */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
+.team-swiper .swiper-button-next,
+.team-swiper .swiper-button-prev {
+  color: #f59e0b !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 50% !important;
+  width: 44px !important;
+  height: 44px !important;
 }
 
-/* Garantir consistência de largura em todas as seções */
-.w-full.max-w-7xl {
-  width: 100%;
-  max-width: 80rem;
+.team-swiper .swiper-button-next:after,
+.team-swiper .swiper-button-prev:after {
+  font-size: 18px !important;
+  font-weight: bold !important;
 }
 
-/* Melhorar responsividade em dispositivos muito pequenos */
-@media (max-width: 320px) {
-  .text-5xl {
-    font-size: 2.5rem;
+.team-swiper .swiper-button-next:hover,
+.team-swiper .swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+  .team-swiper .swiper-button-next,
+  .team-swiper .swiper-button-prev {
+    display: none !important;
   }
-  
-  .text-4xl {
-    font-size: 2rem;
-  }
-  
-  /* Ajustar logo em telas muito pequenas */
-  .text-2xl {
-    font-size: 1.5rem;
-  }
-}
-
-/* Garantir que o header não quebre em telas pequenas */
-@media (max-width: 480px) {
-  nav {
-    min-height: 60px;
-  }
-  
-  /* Garantir que o botão mobile sempre seja visível */
-  button[aria-label*="menu"] {
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Garantir padding consistente em mobile */
-  .px-4 {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-/* Garantir que o header tenha a mesma largura que o conteúdo */
-header {
-  width: 100%;
-}
-
-header .w-full.max-w-7xl {
-  margin-left: auto;
-  margin-right: auto;
 }
 </style>
