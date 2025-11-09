@@ -373,25 +373,35 @@
           </h2>
         </div>
 
+        <!-- Mensagens de feedback -->
+        <div v-if="error" class="mb-6 p-4 bg-rose-600 text-white rounded-lg">
+          {{ error }}
+        </div>
+        <div v-if="successMessage" class="mb-6 p-4 bg-emerald-600 text-white rounded-lg">
+          {{ successMessage }}
+        </div>
+
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <div class="grid md:grid-cols-2 gap-6">
             <div>
-              <label :for="'name'" class="block text-amber-500 mb-2">{{ content.contact.form.fields.name.label }}</label>
+              <label for="name" class="block text-amber-500 mb-2">{{ content.contact.form.fields.name.label }}</label>
               <input
                   type="text"
                   id="name"
+                  v-model="formData.name"
                   :placeholder="content.contact.form.fields.name.placeholder"
-                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-5000 focus:outline-none"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
                   required
               />
             </div>
             <div>
-              <label :for="'date'" class="block text-amber-500 mb-2">{{ content.contact.form.fields.date.label }}</label>
+              <label for="email" class="block text-amber-500 mb-2">{{ content.contact.form.fields.email.label }}</label>
               <input
-                  type="text"
-                  id="date"
-                  :placeholder="content.contact.form.fields.date.placeholder"
-                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-5000 focus:outline-none"
+                  type="email"
+                  id="email"
+                  v-model="formData.email"
+                  :placeholder="content.contact.form.fields.email.placeholder"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
                   required
               />
             </div>
@@ -399,35 +409,83 @@
 
           <div class="grid md:grid-cols-2 gap-6">
             <div>
-              <label :for="'email'" class="block text-amber-500 mb-2">{{ content.contact.form.fields.email.label }}</label>
+              <label for="phone" class="block text-amber-500 mb-2">{{ content.contact.form.fields.phone.label }}</label>
               <input
-                  type="email"
-                  id="email"
-                  :placeholder="content.contact.form.fields.email.placeholder"
-                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-5000 focus:outline-none"
+                  type="tel"
+                  id="phone"
+                  v-model="formData.phone"
+                  :placeholder="content.contact.form.fields.phone.placeholder"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
                   required
               />
             </div>
             <div>
-              <label :for="'phone'" class="block text-amber-500 mb-2">{{ content.contact.form.fields.phone.label }}</label>
+              <label for="date" class="block text-amber-500 mb-2">Data do Agendamento</label>
               <input
-                  type="tel"
-                  id="phone"
-                  :placeholder="content.contact.form.fields.phone.placeholder"
-                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-5000 focus:outline-none"
+                  type="date"
+                  id="date"
+                  v-model="formData.date"
+                  :min="minDate"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
                   required
               />
+              <small v-if="formData.date && !isValidDate(formData.date)" class="text-red-400 text-xs mt-1 block">
+                Fechado às segundas-feiras. Selecione outro dia.
+              </small>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div>
+              <label for="time" class="block text-amber-500 mb-2">Horário</label>
+              <select
+                  id="time"
+                  v-model="formData.time"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
+                  required
+              >
+                <option value="">Selecione um horário</option>
+                <option v-for="timeSlot in availableTimeSlots" :key="timeSlot" :value="timeSlot">
+                  {{ timeSlot }}
+                </option>
+              </select>
+            </div>
+            <div>
+              <label for="service" class="block text-amber-500 mb-2">Serviço</label>
+              <select
+                  id="service"
+                  v-model="formData.service_id"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
+              >
+                <option value="">Selecione um serviço</option>
+                <option v-for="service in services" :key="service.id" :value="service.id">
+                  {{ service.name }} - R$ {{ service.price.toFixed(0) }}
+                </option>
+              </select>
+            </div>
+            <div>
+              <label for="barber" class="block text-amber-500 mb-2">Profissional</label>
+              <select
+                  id="barber"
+                  v-model="formData.barber_id"
+                  class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none"
+              >
+                <option value="">Selecione um profissional</option>
+                <option v-for="barber in barbers" :key="barber.id" :value="barber.id">
+                  {{ barber.name }}
+                </option>
+              </select>
             </div>
           </div>
 
           <div>
-            <label :for="'message'" class="block text-amber-500 mb-2">{{ content.contact.form.fields.message.label }}</label>
+            <label for="message" class="block text-amber-500 mb-2">{{ content.contact.form.fields.message.label }}</label>
             <textarea
                 id="message"
+                v-model="formData.message"
                 :placeholder="content.contact.form.fields.message.placeholder"
                 rows="5"
-                class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-5000 focus:outline-none resize-none"
-                required
+                class="w-full px-4 py-3 bg-neutral-800 text-amber-500 border border-neutral-700 rounded-lg focus:border-amber-500 focus:outline-none resize-none"
             ></textarea>
           </div>
 
@@ -445,9 +503,11 @@
 
           <button
               type="submit"
-              class="w-full py-4 bg-amber-500 text-neutral-900 text-lg font-bold hover:bg-neutral-200 transition-colors duration-300"
+              :disabled="loading"
+              class="w-full py-4 bg-amber-500 text-neutral-900 text-lg font-bold hover:bg-neutral-200 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ content.contact.form.submit }}
+            <span v-if="loading">Enviando...</span>
+            <span v-else>{{ content.contact.form.submit }}</span>
           </button>
         </form>
       </div>
@@ -492,15 +552,18 @@
         <form @submit.prevent="handleNewsletterSubmit" class="flex flex-col md:flex-row gap-4">
           <input
               type="email"
+              v-model="newsletterEmail"
               :placeholder="content.newsletter.placeholder"
-              class="flex-1 px-6 py-4 bg-neutral-800 text-amber-500 border border-neutral-700 focus:outline-none focus:border-amber-5000"
+              class="flex-1 px-6 py-4 bg-neutral-800 text-amber-500 border border-neutral-700 focus:outline-none focus:border-amber-500"
               required
           />
           <button
               type="submit"
-              class="px-8 py-4 bg-amber-500 text-neutral-900 font-bold hover:bg-neutral-200 transition-colors duration-300"
+              :disabled="loading"
+              class="px-8 py-4 bg-amber-500 text-neutral-900 font-bold hover:bg-neutral-200 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ content.newsletter.button }}
+            <span v-if="loading">Inscrevendo...</span>
+            <span v-else>{{ content.newsletter.button }}</span>
           </button>
         </form>
       </div>
@@ -638,9 +701,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
+import { useSupabase } from './composables/useSupabase.js'
 
 // Import Swiper styles
 import 'swiper/css'
@@ -944,6 +1008,85 @@ const mobileMenuOpen = ref(false)
 // Configuração do Swiper
 const swiperModules = [Autoplay, Pagination, Navigation]
 
+// Supabase
+const { 
+  loading, 
+  error, 
+  clearError, 
+  getServices, 
+  getBarbers, 
+  createAppointment, 
+  subscribeNewsletter 
+} = useSupabase()
+
+// Estados para dados dinâmicos
+const services = ref([])
+const barbers = ref([])
+const formData = ref({
+  name: '',
+  email: '',
+  phone: '',
+  date: '',
+  time: '',
+  message: '',
+  service_id: null,
+  barber_id: null
+})
+const newsletterEmail = ref('')
+const successMessage = ref('')
+
+// Gerar horários disponíveis (intervalos de 30 minutos)
+const availableTimeSlots = computed(() => {
+  if (!formData.value.date) return []
+  
+  const selectedDate = new Date(formData.value.date)
+  const dayOfWeek = selectedDate.getDay()
+  
+  // Segunda-feira está fechada
+  if (dayOfWeek === 1) return []
+  
+  const slots = []
+  let startHour, endHour
+  
+  // Definir horários baseados no dia da semana
+  if (dayOfWeek === 6) { // Sábado
+    startHour = 9  // 09:00
+    endHour = 18   // 18:00
+  } else if (dayOfWeek === 0) { // Domingo
+    startHour = 9  // 09:00
+    endHour = 18   // 18:00
+  } else { // Terça a Sexta
+    startHour = 10 // 10:00
+    endHour = 20   // 20:00
+  }
+  
+  for (let hour = startHour; hour < endHour; hour++) {
+    // Adicionar horário :00
+    const hourStr = hour.toString().padStart(2, '0')
+    slots.push(`${hourStr}:00`)
+    
+    // Adicionar horário :30
+    slots.push(`${hourStr}:30`)
+  }
+  
+  return slots
+})
+
+// Validar se é dia de funcionamento
+const isValidDate = (dateString) => {
+  const date = new Date(dateString)
+  const dayOfWeek = date.getDay()
+  
+  // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+  // Permitir todos os dias exceto segunda-feira (1)
+  return dayOfWeek !== 1
+}
+
+// Data mínima (hoje)
+const minDate = computed(() => {
+  return new Date().toISOString().split('T')[0]
+})
+
 // Computed properties para horários
 const currentDay = computed(() => {
   const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
@@ -984,12 +1127,107 @@ const isCurrentDay = (day) => {
   return day === currentDay.value
 }
 
-const handleSubmit = () => {
-  alert('Formulário enviado! (Esta é uma demonstração)')
+// Carregar dados iniciais
+onMounted(async () => {
+  try {
+    const [servicesData, barbersData] = await Promise.all([
+      getServices(),
+      getBarbers()
+    ])
+    
+    services.value = servicesData
+    barbers.value = barbersData
+    
+    // Atualizar dados do content com dados do Supabase
+    if (servicesData.length > 0) {
+      content.value.services.items = servicesData.map(service => ({
+        id: service.id,
+        name: service.name,
+        price: `R$ ${service.price.toFixed(0)}`,
+        image: content.value.services.items[0]?.image || 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&h=400&fit=crop',
+        cta: 'Reserve seu Horário'
+      }))
+    }
+    
+    if (barbersData.length > 0) {
+      content.value.team.members = barbersData.map(barber => ({
+        id: barber.id,
+        name: barber.name,
+        role: barber.role,
+        image: barber.image_url
+      }))
+    }
+  } catch (err) {
+    console.error('Erro ao carregar dados:', err)
+  }
+})
+
+const handleSubmit = async () => {
+  clearError()
+  successMessage.value = ''
+  
+  try {
+    // Validações
+    if (!formData.value.name || !formData.value.email || !formData.value.phone || !formData.value.date || !formData.value.time) {
+      throw new Error('Por favor, preencha todos os campos obrigatórios')
+    }
+    
+    // Validar se é dia de funcionamento
+    if (!isValidDate(formData.value.date)) {
+      throw new Error('Fechado às segundas-feiras. Por favor, selecione outro dia.')
+    }
+    
+    console.log('Dados do formulário:', {
+      date: formData.value.date,
+      time: formData.value.time,
+      service_id: formData.value.service_id,
+      barber_id: formData.value.barber_id
+    })
+    
+    await createAppointment({
+      name: formData.value.name,
+      email: formData.value.email,
+      phone: formData.value.phone,
+      date: formData.value.date,
+      time: formData.value.time,
+      message: formData.value.message,
+      service_id: formData.value.service_id || services.value[0]?.id,
+      barber_id: formData.value.barber_id || barbers.value[0]?.id
+    })
+    
+    successMessage.value = 'Agendamento realizado com sucesso! Entraremos em contato para confirmação.'
+    
+    // Limpar formulário
+    formData.value = {
+      name: '',
+      email: '',
+      phone: '',
+      date: '',
+      time: '',
+      message: '',
+      service_id: null,
+      barber_id: null
+    }
+  } catch (err) {
+    console.error('Erro ao criar agendamento:', err)
+  }
 }
 
-const handleNewsletterSubmit = () => {
-  alert('Inscrito com sucesso! (Esta é uma demonstração)')
+const handleNewsletterSubmit = async () => {
+  clearError()
+  successMessage.value = ''
+  
+  try {
+    if (!newsletterEmail.value) {
+      throw new Error('Por favor, insira um email válido')
+    }
+    
+    await subscribeNewsletter(newsletterEmail.value)
+    successMessage.value = 'Inscrito com sucesso na newsletter!'
+    newsletterEmail.value = ''
+  } catch (err) {
+    console.error('Erro ao inscrever na newsletter:', err)
+  }
 }
 
 const scrollToSection = (sectionId) => {
