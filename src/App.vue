@@ -6,15 +6,13 @@
         <nav class="py-4">
         <div class="flex items-center justify-between">
           <!-- Logo -->
-          <div class="flex items-center space-x-2">
-            <img src="/assets/logo.png"
-                 alt="Logo"
-                 class="w-16 h-16">
+          <a href="#" class="flex items-center space-x-2 text-2xl font-bold text-amber-500 flex-shrink-0 text-[0.75rem]">
+          <img src="/assets/logo.png"
+               alt="Logo"
+               class="w-16 h-16">
 
-            <a href="#" class="text-2xl font-bold text-amber-500 flex-shrink-0">
-              {{ content.header.logo.text }}
-            </a>
-          </div>
+            {{ content.header.logo.text }}
+          </a>
 
           <!-- Desktop Navigation -->
           <ul class="hidden md:flex items-center space-x-4 md:space-x-8">
@@ -324,8 +322,8 @@
               <span :class="[
                 'inline-block px-2 py-1 text-xs font-bold rounded uppercase tracking-wider',
                 isOpenToday
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-rose-600 text-white'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-neutral-700'
               ]">
                 {{ isOpenToday ? 'Aberto Hoje' : 'Fechado Hoje' }}
               </span>
@@ -437,7 +435,7 @@
             <input
                 type="checkbox"
                 id="terms"
-                class="w-5 h-5 bg-neutral-800 border-neutral-700 rounded focus:ring-amber-5000 focus:ring-2"
+                class="w-5 h-5 bg-neutral-800 border-neutral-700 rounded focus:ring-amber-5000 focus:ring-2 accent-amber-500"
                 required
             />
             <label for="terms" class="ml-3 text-neutral-300">
@@ -632,7 +630,7 @@
         </div>
 
         <div class="border-t border-neutral-900 pt-8">
-          <p class="text-center text-neutral-400">{{ content.footer.copyright }} - Desenvolido por <a href="https://www.idealcriativo.com" target="_blank" class="text-amber-500 hover:text-amber-600 transition-colors">Ideal Criativo</a></p>
+          <p class="text-center text-neutral-400">{{ content.footer.copyright }} - Desenvolvido por <a href="https://www.idealcriativo.com" target="_blank" class="text-amber-500 hover:text-amber-600 transition-colors">Ideal Criativo</a></p>
         </div>
       </div>
     </footer>
@@ -657,7 +655,7 @@ const content = ref({
   },
   "header": {
     "logo": {
-      "text": "Barber Shop",
+      "text": "Seven Barber Shop",
       "alt": "Logo da Barbearia"
     },
     "navigation": [
@@ -897,7 +895,7 @@ const content = ref({
   },
   "footer": {
     "about": {
-      "logo": "Barber Shop",
+      "logo": "Seven Barber Shop",
       "text": "Apoiamos a missão de oferecer os melhores serviços através do desenvolvimento de técnicas modernas e atendimento focado em qualidade e experiência do cliente."
     },
     "links": {
@@ -937,7 +935,7 @@ const content = ref({
         ]
       }
     },
-    "copyright": "© 2025 Todos os direitos reservados. Barber Shop"
+    "copyright": "© 2025 Todos os direitos reservados. Seven Barber Shop"
   }
 })
 
